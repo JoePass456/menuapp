@@ -1,26 +1,95 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { Container, Row, Col } from 'reactstrap';
+import axios from 'axios';
+import Nav from './Nav.js';
+import Display from './Display.js';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      currentMenu: 0,
+      itemArray: [],
+    }
+
+    this.menus = [
+      {
+        sub: 'About us',
+        start: null,
+        end: null
+      },
+      {
+        sub: 'Appetizers',
+        start: 0,
+        end: 7
+      }, {
+        sub: 'Lunch',
+        start: 8,
+        end: 15
+      }, {
+        sub: 'Main Course',
+        start: 16,
+        end: 31
+      }, {
+        sub: 'Sides',
+        start: 32,
+        end: 39
+      }, {
+        sub: 'Desserts',
+        start: 40,
+        end: 43
+      }
+    ]   
+  }
+  componentDidMount() {
+    if (!localStorage.getItem('menuData')) {
+      
+      const url = 'https://entree-f18.herokuapp.com/v1/menu/25';
+
+      function makeFirstCall() {
+        return axios.get(url);
+      }
+      function makeSecondCall() {
+        return axios.get(url);
+      }
+
+      var self = this;
+
+      Promise.all([makeFirstCall(), makeSecondCall()])
+        .then(function (results) {
+          const firstData = results[0].data.menu_items;
+          const secondData = results[1].data.menu_items;
+          const menuData = firstData.concat(secondData);
+          localStorage.setItem('menuData', JSON.stringify(menuData));
+          self.setState({itemArray: menuData});
+        });
+
+    } else {      
+      this.setState({itemArray: JSON.parse(localStorage.getItem('menuData'))});
+    }
+
+    
+  }
+
+  clickMenuButton = (index) => {
+    this.setState({ currentMenu: index });
+  }
+
+  render() {
+
+    return (
+      <Container>
+        <Row>
+          <Col className="text-center border bg-secondary">
+            <h1>Joe's DeathStar Bistro</h1>
+          </Col>
+        </Row>
+        <Nav current={this.state.currentMenu} menus={this.menus} clickMenuButton={this.clickMenuButton} />
+        <Display current={this.menus[this.state.currentMenu]} items={this.state.itemArray} />
+      </Container>
+    );
+  }
 }
 
 export default App;
