@@ -4,6 +4,7 @@ import { Row, Col, Button } from 'reactstrap';
 
 function Nav(props) {    
 
+    //Generate nav buttons
     let navBar = props.menus.map(function (subMenu, index) {
         if (index !== props.current) {
             return (

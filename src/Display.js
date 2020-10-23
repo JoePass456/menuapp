@@ -6,6 +6,7 @@ function Display(props) {
 
     let itemDisplay = [];
 
+    // if menu not loaded, shows loading message
     if (props.items.length === 0) {
 
         itemDisplay.push(
@@ -13,7 +14,7 @@ function Display(props) {
         );
 
     } else {
-
+        //Shows the menu
         if (props.current.start != null) {
 
             for (let x = props.current.start; x <= props.current.end; x++) {
@@ -23,7 +24,7 @@ function Display(props) {
             }
 
         } else {
-
+            //Shows the "about us" screen
             itemDisplay.push(
                 <li key="1">
                     <h4>Our Mission:</h4>

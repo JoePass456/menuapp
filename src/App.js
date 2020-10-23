@@ -42,11 +42,13 @@ class App extends React.Component {
       }
     ]   
   }
+
   componentDidMount() {
+    //if local storage is empty..
     if (!localStorage.getItem('menuData')) {
       
+      //Make API call..
       const url = 'https://entree-f18.herokuapp.com/v1/menu/25';
-
       function makeFirstCall() {
         return axios.get(url);
       }
@@ -54,8 +56,8 @@ class App extends React.Component {
         return axios.get(url);
       }
 
+      //and when data comes back, copy to storage and state
       var self = this;
-
       Promise.all([makeFirstCall(), makeSecondCall()])
         .then(function (results) {
           const firstData = results[0].data.menu_items;
@@ -65,13 +67,13 @@ class App extends React.Component {
           self.setState({itemArray: menuData});
         });
 
+    //else if local storage has content.. set state    
     } else {      
       this.setState({itemArray: JSON.parse(localStorage.getItem('menuData'))});
-    }
-
-    
+    }    
   }
 
+  //click handler for nav - changes current menu state
   clickMenuButton = (index) => {
     this.setState({ currentMenu: index });
   }
